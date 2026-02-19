@@ -40,6 +40,19 @@ export default function PersistentTimer() {
 
   const loadTimers = async (email) => {
     try {
+      // Try API first (for cross-device sync)
+      const response = await fetch(`/api/timers?email=${encodeURIComponent(email)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setTimers(data.timers || []);
+        return;
+      }
+    } catch (error) {
+      console.log('API not available, using local storage');
+    }
+    
+    // Fallback to localStorage
+    try {
       const timerData = await window.storage.get(`timers_${email}`);
       if (timerData) {
         setTimers(JSON.parse(timerData.value));
@@ -52,10 +65,22 @@ export default function PersistentTimer() {
 
   const saveTimers = async (updatedTimers) => {
     if (user) {
+      // Save to localStorage (instant backup)
       try {
         await window.storage.set(`timers_${user.email}`, JSON.stringify(updatedTimers));
       } catch (error) {
-        console.error('Error saving timers:', error);
+        console.error('Error saving to localStorage:', error);
+      }
+      
+      // Save to API (for cross-device sync)
+      try {
+        await fetch(`/api/timers?email=${encodeURIComponent(user.email)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ timers: updatedTimers })
+        });
+      } catch (error) {
+        console.error('Error syncing to cloud:', error);
       }
     }
   };
