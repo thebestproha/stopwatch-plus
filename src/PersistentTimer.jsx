@@ -214,8 +214,8 @@ export default function PersistentTimer() {
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
           <div className="text-center mb-6">
             <Clock className="w-16 h-16 mx-auto text-indigo-600 mb-4" />
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Persistent Timer</h1>
-            <p className="text-gray-600">Sign in to sync your timers across devices and keep them running in the background</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Stopwatch Plus</h1>
+            <p className="text-gray-600">Multiple timers that keep running in the background</p>
           </div>
 
           {!showLoginForm ? (
@@ -279,7 +279,7 @@ export default function PersistentTimer() {
             <div className="flex items-center gap-3">
               <Clock className="w-8 h-8 text-indigo-600" />
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">Background Timers</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Stopwatch Plus</h1>
                 <p className="text-sm text-gray-600">Signed in as {user.email}</p>
               </div>
             </div>
@@ -385,17 +385,6 @@ export default function PersistentTimer() {
               </div>
             ))
           )}
-        </div>
-
-        {/* Info Box */}
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mt-6">
-          <h3 className="font-semibold text-indigo-900 mb-2">✓ Background Timer Features:</h3>
-          <ul className="text-sm text-indigo-800 space-y-1">
-            <li>• Timers continue running even when you close the app</li>
-            <li>• Data stored locally in your browser</li>
-            <li>• Close and reopen - your exact time is preserved</li>
-            <li>• All data persists automatically</li>
-          </ul>
         </div>
       </div>
     </div>
