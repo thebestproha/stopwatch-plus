@@ -329,16 +329,29 @@ export default function PersistentTimer() {
               <p className="text-gray-600 text-lg">No timers yet. Create one above!</p>
             </div>
           ) : (
-            timers.map(timer => (
-              <div key={timer.id} className="bg-white rounded-2xl shadow-lg p-6">
+            [...timers].sort((a, b) => {
+              // Completed timers (remainingTime === 0) come first
+              if (a.remainingTime === 0 && b.remainingTime !== 0) return -1;
+              if (a.remainingTime !== 0 && b.remainingTime === 0) return 1;
+              return 0;
+            }).map(timer => (
+              <div key={timer.id} className={`rounded-2xl shadow-lg p-6 ${
+                timer.remainingTime === 0 
+                  ? 'bg-red-50 border-4 border-red-500 animate-pulse' 
+                  : 'bg-white'
+              }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{timer.name}</h3>
-                    <div className="text-4xl font-mono font-bold text-indigo-600">
+                    <h3 className={`text-xl font-bold mb-2 ${
+                      timer.remainingTime === 0 ? 'text-red-700' : 'text-gray-800'
+                    }`}>{timer.name}</h3>
+                    <div className={`text-4xl font-mono font-bold ${
+                      timer.remainingTime === 0 ? 'text-red-600' : 'text-indigo-600'
+                    }`}>
                       {formatTime(timer.remainingTime)}
                     </div>
                     {timer.remainingTime === 0 && (
-                      <p className="text-green-600 font-semibold mt-2">✓ Completed!</p>
+                      <p className="text-red-700 font-bold mt-2 text-lg">⏰ TIME'S UP!</p>
                     )}
                   </div>
                   <div className="flex gap-2">
