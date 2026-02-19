@@ -65,22 +65,27 @@ export default function PersistentTimer() {
 
   const saveTimers = async (updatedTimers) => {
     if (user) {
-      // Save to localStorage (instant backup)
+      // Save to API first (for cross-device sync)
       try {
-        await window.storage.set(`timers_${user.email}`, JSON.stringify(updatedTimers));
-      } catch (error) {
-        console.error('Error saving to localStorage:', error);
-      }
-      
-      // Save to API (for cross-device sync)
-      try {
-        await fetch(`/api/timers?email=${encodeURIComponent(user.email)}`, {
+        const response = await fetch(`/api/timers?email=${encodeURIComponent(user.email)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ timers: updatedTimers })
         });
+        if (!response.ok) {
+          console.error('API save failed:', response.status);
+        } else {
+          console.log('Saved to cloud successfully');
+        }
       } catch (error) {
         console.error('Error syncing to cloud:', error);
+      }
+      
+      // Also save to localStorage (backup)
+      try {
+        await window.storage.set(`timers_${user.email}`, JSON.stringify(updatedTimers));
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
       }
     }
   };
