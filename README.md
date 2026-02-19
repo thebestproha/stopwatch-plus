@@ -37,7 +37,7 @@ npm run preview
 
 Deployed on Vercel with automatic deployments from GitHub.
 
-Live URL: [Coming soon]
+Live URL: [https://stopwatch-plus.vercel.app/](https://stopwatch-plus.vercel.app/)
 
 ## License
 
