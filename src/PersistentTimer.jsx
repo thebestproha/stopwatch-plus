@@ -39,16 +39,24 @@ export default function PersistentTimer() {
   };
 
   const loadTimers = async (email) => {
+    console.log('[LOAD] Attempting to load timers for:', email);
     try {
       // Try API first (for cross-device sync)
       const response = await fetch(`/api/timers?email=${encodeURIComponent(email)}`);
+      console.log('[LOAD] API response status:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('[LOAD] API data received:', data);
         setTimers(data.timers || []);
+        console.log('[LOAD] ✅ Successfully loaded from API');
         return;
+      } else {
+        console.error('[LOAD] API returned error:', response.status);
       }
     } catch (error) {
-      console.log('API not available, using local storage');
+      console.error('[LOAD] API error:', error);
+      console.log('[LOAD] Falling back to localStorage');
     }
     
     // Fallback to localStorage
@@ -56,9 +64,10 @@ export default function PersistentTimer() {
       const timerData = await window.storage.get(`timers_${email}`);
       if (timerData) {
         setTimers(JSON.parse(timerData.value));
+        console.log('[LOAD] ✅ Loaded from localStorage');
       }
     } catch (error) {
-      console.log('No timers found');
+      console.log('[LOAD] No timers found anywhere');
       setTimers([]);
     }
   };
